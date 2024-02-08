@@ -8,9 +8,20 @@ public class Jugador {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    private String nombre;
+
+    private String nom;
     private String color;
+
+    private int victories;
+    
+    public Jugador() {
+    }
+
+    public Jugador(String nom, String color, int victories) {
+        this.nom = nom;
+        this.color = color;
+        this.victories = victories;
+    }
 
     public Long getId() {
         return id;
@@ -20,12 +31,12 @@ public class Jugador {
         this.id = id;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getNom() {
+        return nom;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setNom(String nom) {
+        this.nom = nom;
     }
 
     public String getColor() {
@@ -36,8 +47,22 @@ public class Jugador {
         this.color = color;
     }
 
+    public int getVictories() {
+        return victories;
+    }
+
+    public void setVictories(int victories) {
+        this.victories = victories;
+    }
+
+    public void incrementarVictories() {
+        this.victories++;
+    }
+
     @Override
     public String toString() {
-        return "Jugador [id=" + id + ", nombre=" + nombre + ", color=" + color + "]";
+        return "Jugador [id=" + id + ", nom=" + nom + ", color=" + color + ", victories=" + victories + "]";
     }
 }
+
+
