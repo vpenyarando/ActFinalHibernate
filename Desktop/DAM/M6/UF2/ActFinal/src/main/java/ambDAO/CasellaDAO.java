@@ -1,5 +1,5 @@
 package ambDAO;
 
-public class CasellaDAO {
+public interface CasellaDAO {
 
 }

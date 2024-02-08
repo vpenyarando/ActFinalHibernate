@@ -1,5 +1,5 @@
 package ambDAO;
 
-public class FitxaDAO {
+public interface FitxaDAO {
 
 }

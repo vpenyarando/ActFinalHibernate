@@ -1,5 +1,5 @@
 package ambDAO;
 
-public class PartidaDAO {
+public interface PartidaDAO {
 
 }
