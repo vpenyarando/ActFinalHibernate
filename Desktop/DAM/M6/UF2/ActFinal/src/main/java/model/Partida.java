@@ -6,77 +6,76 @@ import java.util.Date;
 @Entity
 @Table(name = "Partides")
 public class Partida {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "IdPartida")
-    private int idPartida;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "IdPartida")
+	private int idPartida;
 
-    @Column(name = "FechaInicio")
-    private Date fechaInicio;
+	@Column(name = "FechaInicio")
+	private Date fechaInicio;
 
-    @Column(name = "FechaFin")
-    private Date fechaFin;
+	@Column(name = "FechaFin")
+	private Date fechaFin;
 
-    @ManyToOne
-    @JoinColumn(name = "IdGanador")
-    private Jugador ganador;
+	@ManyToOne
+	@JoinColumn(name = "IdGanador")
+	private Jugador ganador;
 
-    @Column(name = "EnCurso")
-    private boolean enCurso;
+	@Column(name = "EnCurso")
+	private boolean enCurso;
 
-    public Partida() {
-        
-    }
+	public Partida() {
+		this.fechaInicio = new Date();
+	}
 
-    public int getIdPartida() {
-        return idPartida;
-    }
+	public Partida(Date fechaInicio) {
+		this.fechaInicio = fechaInicio;
+	}
 
-    public void setIdPartida(int idPartida) {
-        this.idPartida = idPartida;
-    }
+	public int getIdPartida() {
+		return idPartida;
+	}
 
-    public Date getFechaInicio() {
-        return fechaInicio;
-    }
+	public void setIdPartida(int idPartida) {
+		this.idPartida = idPartida;
+	}
 
-    public void setFechaInicio(Date fechaInicio) {
-        this.fechaInicio = fechaInicio;
-    }
+	public Date getFechaInicio() {
+		return fechaInicio;
+	}
 
-    public Date getFechaFin() {
-        return fechaFin;
-    }
+	public void setFechaInicio(Date fechaInicio) {
+		this.fechaInicio = fechaInicio;
+	}
 
-    public void setFechaFin(Date fechaFin) {
-        this.fechaFin = fechaFin;
-    }
+	public Date getFechaFin() {
+		return fechaFin;
+	}
 
-    public Jugador getGanador() {
-        return ganador;
-    }
+	public void setFechaFin(Date fechaFin) {
+		this.fechaFin = fechaFin;
+	}
 
-    public void setGanador(Jugador ganador) {
-        this.ganador = ganador;
-    }
+	public Jugador getGanador() {
+		return ganador;
+	}
 
-    public boolean isEnCurso() {
-        return enCurso;
-    }
+	public void setGanador(Jugador ganador) {
+		this.ganador = ganador;
+	}
 
-    public void setEnCurso(boolean enCurso) {
-        this.enCurso = enCurso;
-    }
+	public boolean isEnCurso() {
+		return enCurso;
+	}
 
-    @Override
-    public String toString() {
-        return "Partida{" +
-                "idPartida=" + idPartida +
-                ", fechaInicio=" + fechaInicio +
-                ", fechaFin=" + fechaFin +
-                ", ganador=" + ganador +
-                ", enCurso=" + enCurso +
-                '}';
-    }
+	public void setEnCurso(boolean enCurso) {
+		this.enCurso = enCurso;
+	}
+
+	@Override
+	public String toString() {
+		return "Partida{" + "idPartida=" + idPartida + ", fechaInicio=" + fechaInicio + ", fechaFin=" + fechaFin
+				+ ", ganador=" + ganador + ", enCurso=" + enCurso + '}';
+	}
+
 }
-
