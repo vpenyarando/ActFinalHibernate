@@ -2,7 +2,7 @@ package ambDAO;
 
 import org.hibernate.*;
 import model.*;
-import java.util.List;
+
 
 public class JugadorImp implements JugadorDAO {
 
@@ -31,16 +31,6 @@ public class JugadorImp implements JugadorDAO {
     public Jugador obtenerJugador(Long id) {
         try (Session s = sf.openSession()) {
             return s.get(Jugador.class, id);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    @Override
-    public List<Jugador> obtenerTodosLosJugadores() {
-        try (Session s = sf.openSession()) {
-            return s.createQuery("FROM Jugador", Jugador.class).list();
         } catch (Exception e) {
             e.printStackTrace();
             return null;
