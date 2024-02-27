@@ -167,3 +167,4 @@ public class main {
 		// farem per controlar la partida
 
 	}
+}
