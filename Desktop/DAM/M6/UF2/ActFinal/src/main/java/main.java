@@ -75,14 +75,32 @@ public class main {
 				
 				//primera tirada
 				tirada=tiradaDaus();
-				boolean activesFitxes= actives(fitxesJugador);
-				if(activesFitxes){
-					List <Fitxa> fitxesActives=llistaFitxesActives(fitxesJugador);
+				List <Fitxa> fitxesActives=llistaFitxesActives(fitxesJugador);
+				if(fitxesActives.size()<1){
+					if(tirada[0]==tirada[1]){
+						// cas que els dos daus tinguin el mateix resultat
+						if(contTirades<2){
+							++contTirades;
+							
+							if (llistaFitxesActives(fitxesJugador).size()<4) {
+								//cas que tenim fitxes a casa//entradaALTablero
+								posarEntrada(fitxesJugador,tornJugador.getColor());
+							}else{
+								// cas que totes estan en joc
+							}
+						}
+					}
 				}
 				
 				
 			}
 		} while (guanyador);
+		
+	}
+
+
+
+	private static void posarEntrada(List<Fitxa> fitxesJugador,) {
 		
 	}
 
@@ -98,14 +116,7 @@ public class main {
 		return fitxesActives;
 	}
 
-	private static boolean actives(List<Fitxa> fitxesJugador) {
-		for (Fitxa fitxa : fitxesJugador) {
-			if (fitxa.isActiva()) {
-				return true; // Devuelve true si al menos una ficha está activa
-			}
-		}
-		return false;
-	}
+
 
 	private static void ordenarJugadors(int torn) {
 
