@@ -76,31 +76,60 @@ public class main {
 				//primera tirada
 				tirada=tiradaDaus();
 				List <Fitxa> fitxesActives=llistaFitxesActives(fitxesJugador);
-				if(fitxesActives.size()<1){
+				if(fitxesActives.size()<4){
+					//cas qeu tenim fitxes en casella
 					if(tirada[0]==tirada[1]){
 						// cas que els dos daus tinguin el mateix resultat
 						if(contTirades<2){
 							++contTirades;
+							//cas que tenim fitxes a casa//entradaALTablero
+							posarEntrada(fitxesJugador,tornJugador.getColor());
+							if (llistaFitxesActives(fitxesJugador).size()<4) {										
+								
+													
 							
-							if (llistaFitxesActives(fitxesJugador).size()<4) {
-								//cas que tenim fitxes a casa//entradaALTablero
-								posarEntrada(fitxesJugador,tornJugador.getColor());
-							}else{
-								// cas que totes estan en joc
-							}
+						}else{
+							// cas s'ha me matar una ftixa excepte que estigui a casa, pasadisMeta o Meta
+							matarUnafitxa(fitxesActives);	
 						}
 					}
+				else{
+					////comprovar moviments amb dau color fitxa jugador
+								//usuari selecciona casella
+								//posar fitxa en casella seleccionada
+								//comprobar si mata alguna casella
+							   //comprovar si ha guanyat
+							   //break per sortir buccle
+							   break;
+				}
 				}
 				
 				
 			}
-		} while (guanyador);
+		} while (!guanyador);
+	
 		
 	}
 
 
 
-	private static void posarEntrada(List<Fitxa> fitxesJugador,) {
+	private static void matarUnafitxa(List<Fitxa> fitxesActives) {
+		// ha de complir les seguents condicions ni ha de estar fora de pasa
+for(Fitxa tip: fitxesActives){
+	if(tip.getPosicio()<69){
+		//esta dintr del tauler
+		fitxaDAO.moureFitxa(tip, 0);
+	}
+}
+	}
+
+	private static void posarEntrada(List<Fitxa> fitxesJugador,String color) {
+		// obetenir la posicio entrada i de color
+		for (Fitxa tip : fitxesJugador) {
+			Casella entrada = especialDAO.getCasellaByColor(color,"Entrada");
+		fitxaDAO.moureFitxa(tip, entrada.getPosicio());
+		break;
+		}
 		
 	}
 
