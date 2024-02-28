@@ -1,84 +1,77 @@
 package model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
-@Table(name = "fitxa")
+@Table(name = "Fitxes")
 public class Fitxa {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
-	
-	@Column(name = "POSICIO", nullable = false, columnDefinition = "0")
-	private int posicio;
 
-	@Column(name = "Activa")
-	private boolean activa;
-	@ManyToOne
-	@JoinColumn(name = "id_jugador")
-	private Jugador jugador;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "IdFitxa")
+    private Long idFitxa;
 
-	public Fitxa(int posicio, boolean activa, Jugador jugador, Partida partida) {
-		super();
-		this.posicio = posicio;
-		this.activa = activa;
-		this.jugador = jugador;
-		this.partida = partida;
-	}
+    @Column(name = "Posicio")
+    private int posicio;
 
-	@ManyToOne
-	@JoinColumn(name = "id_partida")
-	private Partida partida;
+    @Column(name = "Activa")
+    private boolean activa;
 
-	public Fitxa() {
-		super();
-	}
+    @ManyToOne
+    @JoinColumn(name = "IdJugador")
+    private Jugador jugador;
 
-	public int getId() {
-		return id;
-	}
+    @ManyToOne
+    @JoinColumn(name = "IdPartida")
+    private Partida partida;
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public Fitxa() {
+    }
 
-	public int getPosicio() {
-		return posicio;
-	}
+    public Fitxa(int posicio, boolean activa, Jugador jugador, Partida partida) {
+        this.posicio = posicio;
+        this.activa = activa;
+        this.jugador = jugador;
+        this.partida = partida;
+    }
 
-	public void setPosicio(int posicio) {
-		this.posicio = posicio;
-	}
+    public Long getIdFitxa() {
+        return idFitxa;
+    }
 
-	public boolean isActiva() {
-		return activa;
-	}
+    public void setIdFitxa(Long idFitxa) {
+        this.idFitxa = idFitxa;
+    }
 
-	public void setActiva(boolean activa) {
-		this.activa = activa;
-	}
+    public int getPosicio() {
+        return posicio;
+    }
 
-	public Jugador getJugador() {
-		return jugador;
-	}
+    public void setPosicio(int posicio) {
+        this.posicio = posicio;
+    }
 
-	public void setJugador(Jugador jugador) {
-		this.jugador = jugador;
-	}
+    public boolean isActiva() {
+        return activa;
+    }
 
-	public Partida getPartida() {
-		return partida;
-	}
+    public void setActiva(boolean activa) {
+        this.activa = activa;
+    }
 
-	public void setPartida(Partida partida) {
-		this.partida = partida;
-	}
+    public Jugador getJugador() {
+        return jugador;
+    }
 
+    public void setJugador(Jugador jugador) {
+        this.jugador = jugador;
+    }
+
+    public Partida getPartida() {
+        return partida;
+    }
+
+    public void setPartida(Partida partida) {
+        this.partida = partida;
+    }
 }

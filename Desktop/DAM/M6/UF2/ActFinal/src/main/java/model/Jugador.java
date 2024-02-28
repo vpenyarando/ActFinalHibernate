@@ -1,71 +1,86 @@
-
 package model;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
+@Table(name = "Jugadors")
 public class Jugador {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "IdJugador")
+    private Long idJugador;
 
-	@Column(name = "Nom", nullable = false, length = 100)
-	private String nom;
-	
-	@Column(name = "Color", nullable = false, length = 50)
-	private String color;
+    @Column(name = "Nom")
+    private String nom;
 
-	@Column(name = "VICTORIES", nullable = false, columnDefinition = "0")
-	private int victories;
+    @Column(name = "Color")
+    private String color;
 
-	public Jugador() {
-	}
+    @Column(name = "Victories")
+    private int victories;
 
-	public Jugador(String nom, String color, int victories) {
+    @OneToMany(mappedBy = "jugador")
+    private Set<Fitxa> fitxes;
+
+    @OneToMany(mappedBy = "guanyador")
+    private Set<Partida> partidesGuanyades;
+
+    public Jugador() {
+    }
+
+    public Jugador(String nom, String color, int victories) {
 		this.nom = nom;
 		this.color = color;
 		this.victories = victories;
 	}
+    
+    public Long getIdJugador() {
+        return idJugador;
+    }
 
-	public Long getId() {
-		return id;
-	}
+    public void setIdJugador(Long idJugador) {
+        this.idJugador = idJugador;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public String getNom() {
+        return nom;
+    }
 
-	public String getNom() {
-		return nom;
-	}
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
 
-	public void setNom(String nom) {
-		this.nom = nom;
-	}
+    public String getColor() {
+        return color;
+    }
 
-	public String getColor() {
-		return color;
-	}
+    public void setColor(String color) {
+        this.color = color;
+    }
 
-	public void setColor(String color) {
-		this.color = color;
-	}
+    public int getVictories() {
+        return victories;
+    }
 
-	public int getVictories() {
-		return victories;
-	}
+    public void setVictories(int victories) {
+        this.victories = victories;
+    }
 
-	public void setVictories(int victories) {
-		this.victories = victories;
-	}
+    public Set<Fitxa> getFitxes() {
+        return fitxes;
+    }
 
-	public void incrementarVictories() {
-		this.victories++;
-	}
+    public void setFitxes(Set<Fitxa> fitxes) {
+        this.fitxes = fitxes;
+    }
 
-	@Override
-	public String toString() {
-		return "Jugador [id=" + id + ", nom=" + nom + ", color=" + color + ", victories=" + victories + "]";
-	}
+    public Set<Partida> getPartidesGuanyades() {
+        return partidesGuanyades;
+    }
+
+    public void setPartidesGuanyades(Set<Partida> partidesGuanyades) {
+        this.partidesGuanyades = partidesGuanyades;
+    }
 }

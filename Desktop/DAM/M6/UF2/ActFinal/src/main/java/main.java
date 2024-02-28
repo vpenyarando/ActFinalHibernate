@@ -1,4 +1,3 @@
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -35,7 +34,7 @@ public class main {
 
 			// exception handling omitted for brevityaa
 
-			serviceRegistry = new StandardServiceRegistryBuilder().configure("hibernate.cfg2.xml").build();
+			serviceRegistry = new StandardServiceRegistryBuilder().configure("hibernate.cfg1.xml").build();
 
 			sessionFactory = new MetadataSources(serviceRegistry).buildMetadata().buildSessionFactory();
 		}
@@ -240,7 +239,7 @@ public class main {
 		joc = new Partida();
 		// Es crea una partida, registrant la data d'inici i establint la
 		// condició de “EnCurso”.
-		joc.setEnCurso(true);
+		joc.setEnCurs(true);
 		// crear partida a la base dades
 		crearPartidaBBDD();
 

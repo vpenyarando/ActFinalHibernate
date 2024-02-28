@@ -2,80 +2,104 @@ package model;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Set;
 
 @Entity
 @Table(name = "Partides")
 public class Partida {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "IdPartida")
-	private Long idPartida;
 
-	@Column(name = "FechaInicio")
-	private Date fechaInicio;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "IdPartida")
+    private int idPartida;
 
-	@Column(name = "FechaFin")
-	private Date fechaFin;
+    @Column(name = "DataInici")
+    private Date dataInici;
 
-	@ManyToOne
-	@JoinColumn(name = "IdGanador")
-	private Jugador ganador;
+    @Column(name = "DataFi")
+    private Date dataFi;
 
-	@Column(name = "EnCurso")
-	private boolean enCurso;
+    @ManyToOne
+    @JoinColumn(name = "IdGuanyador")
+    private Jugador guanyador;
 
-	public Partida() {
-		this.fechaInicio = new Date();
-	}
+    @Column(name = "EnCurs")
+    private boolean enCurs;
 
-	public Partida(Date fechaInicio) {
-		this.fechaInicio = fechaInicio;
-	}
+    @OneToMany(mappedBy = "partida")
+    private Set<Fitxa> fitxes;
 
-	public Long getIdPartida() {
-		return idPartida;
-	}
+    @OneToMany(mappedBy = "partida")
+    private Set<Casella> caselles;
 
-	public void setIdPartida(Long idPartida) {
-		this.idPartida = idPartida;
-	}
+    public Partida() {
+    }
 
-	public Date getFechaInicio() {
-		return fechaInicio;
-	}
+    public Partida(Date dataInici, boolean enCurs) {
+        this.dataInici = dataInici;
+        this.enCurs = enCurs;
+    }
 
-	public void setFechaInicio(Date fechaInicio) {
-		this.fechaInicio = fechaInicio;
-	}
+    public Partida(Date dataInici, Date dataFi, Jugador guanyador, boolean enCurs) {
+        this.dataInici = dataInici;
+        this.dataFi = dataFi;
+        this.guanyador = guanyador;
+        this.enCurs = enCurs;
+    }
 
-	public Date getFechaFin() {
-		return fechaFin;
-	}
+    public int getIdPartida() {
+        return idPartida;
+    }
 
-	public void setFechaFin(Date fechaFin) {
-		this.fechaFin = fechaFin;
-	}
+    public void setIdPartida(int idPartida) {
+        this.idPartida = idPartida;
+    }
 
-	public Jugador getGanador() {
-		return ganador;
-	}
+    public Date getDataInici() {
+        return dataInici;
+    }
 
-	public void setGanador(Jugador ganador) {
-		this.ganador = ganador;
-	}
+    public void setDataInici(Date dataInici) {
+        this.dataInici = dataInici;
+    }
 
-	public boolean isEnCurso() {
-		return enCurso;
-	}
+    public Date getDataFi() {
+        return dataFi;
+    }
 
-	public void setEnCurso(boolean enCurso) {
-		this.enCurso = enCurso;
-	}
+    public void setDataFi(Date dataFi) {
+        this.dataFi = dataFi;
+    }
 
-	@Override
-	public String toString() {
-		return "Partida{" + "idPartida=" + idPartida + ", fechaInicio=" + fechaInicio + ", fechaFin=" + fechaFin
-				+ ", ganador=" + ganador + ", enCurso=" + enCurso + '}';
-	}
+    public Jugador getGuanyador() {
+        return guanyador;
+    }
 
+    public void setGuanyador(Jugador guanyador) {
+        this.guanyador = guanyador;
+    }
+
+    public boolean isEnCurs() {
+        return enCurs;
+    }
+
+    public void setEnCurs(boolean enCurs) {
+        this.enCurs = enCurs;
+    }
+
+    public Set<Fitxa> getFitxes() {
+        return fitxes;
+    }
+
+    public void setFitxes(Set<Fitxa> fitxes) {
+        this.fitxes = fitxes;
+    }
+
+    public Set<Casella> getCaselles() {
+        return caselles;
+    }
+
+    public void setCaselles(Set<Casella> caselles) {
+        this.caselles = caselles;
+    }
 }
