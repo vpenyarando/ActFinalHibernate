@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.time.LocalDate;
+import java.util.Date;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -45,8 +47,8 @@ public class main {
 
 	// Atributs de partida
 	private static Partida joc;
-	private static List<Jugador> jugadors;
-	private static List<Fitxa> fitxes;
+	private static List<Jugador> jugadors = new ArrayList<Jugador>();
+	private static List<Fitxa> fitxes = new ArrayList<Fitxa>();;
 
 	public static void main(String[] args) {
 		// Iniciar instancias
@@ -88,7 +90,7 @@ public class main {
 				casellaDAO.saveOrUpdate(casella);
 				break;
 			case 5:
-				CasellaEspecial entradaGroc = new CasellaEspecial("seguro", i, joc, "entrada", "groc");
+				CasellaEspecial entradaGroc = new CasellaEspecial("groc", i, joc, "entrada", "groc");
 				especialDAO.saveOrUpdate(entradaGroc);
 				break;
 			case 17:
@@ -185,14 +187,14 @@ public class main {
 				System.out.println(j + " color " + colors.get(j));
 			}
 			do {
-				System.out.println("Si us plau, ha de se entre 0 i " + colors.size() + ":");
+				System.out.println("Si us plau, ha de se entre 0 i " + (colors.size() - 1) + ":");
 				while (!sc.hasNextInt()) {
-					System.out.println("Si us plau el número ha de ser entre 0 i " + colors.size() + ":");
+					System.out.println("Si us plau el número ha de ser entre 0 i " + (colors.size() - 1) + ":");
 					sc.next();
 				}
 				opcio = sc.nextInt();
-				sc.close();
-			} while (opcio <= 0 || opcio > colors.size());
+				sc.nextLine();
+			} while (opcio < 0 || opcio >= colors.size());
 			String colorSeleccionat = colors.get(opcio);
 			jugadors.add(new Jugador(nomJugador, colorSeleccionat, 0));
 			colors.remove(opcio);
@@ -230,16 +232,17 @@ public class main {
 				sc.next();
 			}
 			opcio = sc.nextInt();
-			sc.close();
+			sc.nextLine();
 		} while (opcio < 2 || opcio > 4);
 		return opcio;
 	}
 
 	public static void iniciarPartida() {
-		joc = new Partida();
 		// Es crea una partida, registrant la data d'inici i establint la
-		// condició de “EnCurso”.
-		joc.setEnCurs(true);
+        LocalDate fechaActual = LocalDate.now();
+        // Convertir LocalDate a Date
+        Date date = java.sql.Date.valueOf(fechaActual);
+		joc = new Partida(date, true);
 		// crear partida a la base dades
 		crearPartidaBBDD();
 

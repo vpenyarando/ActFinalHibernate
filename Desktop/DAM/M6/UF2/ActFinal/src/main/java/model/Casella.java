@@ -82,6 +82,8 @@ public class Casella {
 	public void setPartida(Partida partida) {
 		this.partida = partida;
 	}
+	
+	
 
 	public boolean isSeguro() {
 		switch (this.tipusCasella) {

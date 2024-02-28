@@ -16,10 +16,10 @@ public class CasellaEspecial extends Casella {
 	}
 
 	// sortida/entrada
-	@Column(name = "nom", nullable = false, length = 50)
+	@Column(name = "nom")
 	private String nom;
 	// colors jugadors les farem autogenerar
-	@Column(name = "color", nullable = false, length = 50)
+	@Column(name = "color")
 	private String color;
 	
 
