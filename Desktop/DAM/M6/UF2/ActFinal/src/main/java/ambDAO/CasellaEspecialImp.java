@@ -1,5 +1,8 @@
 package ambDAO;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
@@ -41,7 +44,8 @@ public class CasellaEspecialImp extends GenericDAOImpl<CasellaEspecial, Integer>
 	        try {
 	            session.beginTransaction();
 	            // Realizar la consulta para obtener la casilla con el color y tipo dados
-	            Query<CasellaEspecial> query = session.createQuery("FROM CasellaEspecial WHERE color = :color AND tipusCasella = :tipus", CasellaEspecial.class);
+	            Query<CasellaEspecial> query = 
+	            		session.createQuery("FROM CasellaEspecial WHERE color = :color AND tipusCasella = :tipus", CasellaEspecial.class);
 	            query.setParameter("color", color);
 	            query.setParameter("tipus", tipus);
 	            CasellaEspecial casella = query.uniqueResult();
@@ -56,5 +60,21 @@ public class CasellaEspecialImp extends GenericDAOImpl<CasellaEspecial, Integer>
 	            return null;
 	        }
 	}
+
+	@Override
+	public List<Integer> obtenerPosicionesCasillasEspecialesEnPartida(long idPartida) {
+		 try (Session session = Utils.getSessionFactory().openSession()) {
+		        String hql = "SELECT c.posicio FROM CasellaEspecial c WHERE c.partida.id = :idPartida";
+		        Query<Integer> query = session.createQuery(hql, Integer.class);
+		        query.setParameter("idPartida", idPartida);
+		        return query.list();
+		    } catch (Exception e) {
+		        // Manejar la excepción según tus necesidades
+		        e.printStackTrace();
+		        return Collections.emptyList(); // Devolver una lista vacía en caso de error
+		    }
+	}
+
+
 
 }

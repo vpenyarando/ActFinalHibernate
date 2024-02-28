@@ -38,6 +38,12 @@ public class Casella {
 		this.partida = partida;
 	}
 
+	public Casella(String tipusCasella, int posicio) {
+		super();
+		this.tipusCasella = tipusCasella;
+		this.posicio = posicio;
+	}
+
 	public Casella(String tipusCasella, int posicio, Partida partida) {
 		super();
 		this.tipusCasella = tipusCasella;
@@ -82,6 +88,7 @@ public class Casella {
 		case "casa":
 		case "seguro":
 		case "pasadisMeta":
+		case "meta":
 			return true;
 		default:
 			return false;

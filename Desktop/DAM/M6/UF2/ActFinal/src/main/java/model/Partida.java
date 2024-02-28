@@ -9,7 +9,7 @@ public class Partida {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "IdPartida")
-	private int idPartida;
+	private Long idPartida;
 
 	@Column(name = "FechaInicio")
 	private Date fechaInicio;
@@ -32,11 +32,11 @@ public class Partida {
 		this.fechaInicio = fechaInicio;
 	}
 
-	public int getIdPartida() {
+	public Long getIdPartida() {
 		return idPartida;
 	}
 
-	public void setIdPartida(int idPartida) {
+	public void setIdPartida(Long idPartida) {
 		this.idPartida = idPartida;
 	}
 

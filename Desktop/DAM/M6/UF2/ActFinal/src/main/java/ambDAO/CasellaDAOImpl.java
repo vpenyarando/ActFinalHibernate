@@ -6,52 +6,50 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.Query;
 
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
 
 import InterfacesDAO.CasellaDAO;
 import model.Casella;
-import model.Partida;
 
-public class CasellaDAOImpl extends GenericDAOImpl<Casella,Integer> implements CasellaDAO {
-	private EntityManager em;
+public class CasellaDAOImpl extends GenericDAOImpl<Casella, Integer> implements CasellaDAO {
 
-	public CasellaDAOImpl(EntityManager em) {
-		this.em = em;
-	}
-	public void add(Casella c) throws Exception {
-		try {
-			em.getTransaction().begin();
-			em.persist(c);
-			em.getTransaction().commit();
-		} catch (EntityNotFoundException ex) {
-			throw new RuntimeException(ex.getMessage());
-		}
-	}
-	public EntityManager getEm() {
-		return em;
-	}
-	public void setEm(EntityManager em) {
-		this.em = em;
-	}
 	@Override
 	public boolean verificarCasaSegura(int posicion) {
-		Casella casilla = get(posicion);
-		  if (casilla != null && casilla.isSeguro()) {
-		        return true;
-		    }
-		  return false;
+		Session session = Utils.getSessionFactory().getCurrentSession();
+
+		try {
+			session.beginTransaction();
+
+			// HQL query para verificar si la casilla en la posición dada es casa o casilla
+			// segura
+			String hql = "SELECT c.tipusCasella FROM Casella c WHERE c.posicio = :posicio";
+			String tipusCasella = (String) session.createQuery(hql).setParameter("posicio", posicion).uniqueResult();
+
+			session.getTransaction().commit();
+
+			// Verificar si la casilla es casa o casilla segura
+			return tipusCasella != null && (tipusCasella.equals("casa") || tipusCasella.equals("seguro")
+					|| tipusCasella.equals("pasadisMeta") || tipusCasella.equals("meta"));
+		} catch (HibernateException e) {
+			if (session != null && session.getTransaction() != null) {
+				session.getTransaction().rollback();
+			}
+			e.printStackTrace();
+			return false;
+		} finally {
+			if (session != null) {
+				session.close();
+			}
+		}
 	}
 
 
-	/*@Override
-	public boolean verificarCasaSegura(int posicion) {
-		Casella casilla = get(posicion);
-		  if (casilla != null && casilla.isSeguro()) {
-		        return true;
-		    }
-		  return false;
-	}*/
 
+	/*
+	 * @Override public boolean verificarCasaSegura(int posicion) { Casella casilla
+	 * = get(posicion); if (casilla != null && casilla.isSeguro()) { return true; }
+	 * return false; }
+	 */
 
-	
-	
 }
