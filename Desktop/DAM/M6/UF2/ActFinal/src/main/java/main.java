@@ -3,11 +3,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.boot.MetadataSources;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.hibernate.service.ServiceRegistry;
+
 
 import ambDAO.*;
 import InterfacesDAO.*;
@@ -18,10 +14,7 @@ import model.Fitxa;
 import model.Jugador;
 
 public class main {
-	// part de la connexio
-	static Session session;
-	static SessionFactory sessionFactory;
-	static ServiceRegistry serviceRegistry;
+
 
 	// creacio DAO
 	private static JugadorDAO jugadorDAO;
@@ -30,17 +23,7 @@ public class main {
 	private static CasellaDAO casellaDAO;
 	private static CasellaEspecialDAO especialDAO;
 
-	public static synchronized SessionFactory getSessionFactory() {
-		if (sessionFactory == null) {
 
-			// exception handling omitted for brevityaa
-
-			serviceRegistry = new StandardServiceRegistryBuilder().configure("hibernate.cfg2.xml").build();
-
-			sessionFactory = new MetadataSources(serviceRegistry).buildMetadata().buildSessionFactory();
-		}
-		return sessionFactory;
-	}
 
 	private static Scanner sc = new Scanner(System.in);
 
@@ -66,6 +49,9 @@ public class main {
 
 		// crearTauler
 		crearCaselles();
+		
+		
+		//inici j
 
 	}
 
