@@ -1,6 +1,9 @@
 package ambDAO;
 
+import java.util.Collections;
 import java.util.List;
+
+import org.hibernate.*;
 
 import InterfacesDAO.FitxaDAO;
 import model.Fitxa;
@@ -12,8 +15,15 @@ public class FitxaDAOImpl extends GenericDAOImpl<Fitxa,Integer> implements Fitxa
 
 	@Override
 	public List<Fitxa> getAllFitxesPartida(Partida partida) {
-		// TODO Auto-generated method stub
-		return null;
+		    try (Session session = Utils.getSessionFactory().openSession()) {
+        String hql = "SELECT f FROM Fitxa f WHERE f.partida = :partida";
+        Query<Fitxa> query = session.createQuery(hql, Fitxa.class);
+        query.setParameter("partida", partida);
+        return query.list();
+    } catch (Exception e) {
+        e.printStackTrace();
+        return Collections.emptyList();
+    }
 	}
 
 	@Override

@@ -1,9 +1,8 @@
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
-
-
 
 import ambDAO.*;
 import InterfacesDAO.*;
@@ -15,15 +14,12 @@ import model.Jugador;
 
 public class main {
 
-
 	// creacio DAO
 	private static JugadorDAO jugadorDAO;
 	private static PartidaDAO partidaDAO;
 	private static FitxaDAO fitxaDAO;
 	private static CasellaDAO casellaDAO;
 	private static CasellaEspecialDAO especialDAO;
-
-
 
 	private static Scanner sc = new Scanner(System.in);
 
@@ -49,9 +45,87 @@ public class main {
 
 		// crearTauler
 		crearCaselles();
+
+		// iniciar el joc
+		inciarJugar();
+
+		cloenda();
+
+	}
+
+	private static void inciarJugar() {
+		int torn = buscarAleatoriamentJugador();
+		int maxJugador= jugadors.size();
+		int[] tirada= new int[2];
+		boolean guanyador= false;
+		int contTirades;
+		ordenarJugadors(torn);
+		List <Fitxa> fitxesList= fitxaDAO.getAllFitxesPartida(joc);
+		do {
+			//jugador que fem la jugada
+			Jugador tornJugador= jugadors.get(torn);
+			List <Fitxa> fitxesJugador= new ArrayList<>();
+			for (Fitxa tipe:fitxesList){
+				if(tipe.getJugador()==tornJugador){
+                fitxesJugador.add(tipe);
+				}
+			}
+			contTirades=0;
+			while (true) {
+				
+				//primera tirada
+				tirada=tiradaDaus();
+				boolean activesFitxes= actives(fitxesJugador);
+				if(activesFitxes){
+					List <Fitxa> fitxesActives=llistaFitxesActives(fitxesJugador);
+				}
+				
+				
+			}
+		} while (guanyador);
 		
-		
-		//inici j
+	}
+
+	private static List<Fitxa> llistaFitxesActives(List<Fitxa> fitxesJugador) {
+		List<Fitxa> fitxesActives = new ArrayList<>();
+
+		for (Fitxa fitxa : fitxesJugador) {
+			if (fitxa.isActiva()) {
+				fitxesActives.add(fitxa);
+			}
+		}
+	
+		return fitxesActives;
+	}
+
+	private static boolean actives(List<Fitxa> fitxesJugador) {
+		for (Fitxa fitxa : fitxesJugador) {
+			if (fitxa.isActiva()) {
+				return true; // Devuelve true si al menos una ficha está activa
+			}
+		}
+		return false;
+	}
+
+	private static void ordenarJugadors(int torn) {
+
+	}
+
+	private static int[] tiradaDaus() {
+		Dau dau = new Dau();
+
+		int[] resposta = { dau.tirar(), dau.tirar() };
+
+		return resposta;
+	}
+
+	private static int buscarAleatoriamentJugador() {
+		Random random = new Random();
+		return random.nextInt(jugadors.size());
+	}
+
+	private static void cloenda() {
+		System.out.println("Partida acabada");
 
 	}
 
@@ -63,70 +137,70 @@ public class main {
 		for (int i = 0; i <= numCaselles; i++) {
 			Casella casella;
 			switch (i) {
-			case 0:
-				casella = new Casella("casa", i, joc);
-				casellaDAO.saveOrUpdate(casella);
-				break;
-			case 12:
-			case 29:
-			case 46:
-			case 63:
-				casella = new Casella("seguro", i, joc);
-				casellaDAO.saveOrUpdate(casella);
-				break;
-			case 5:
-				CasellaEspecial entradaGroc = new CasellaEspecial("seguro", i, joc, "entrada", "groc");
-				especialDAO.saveOrUpdate(entradaGroc);
-				break;
-			case 17:
-				CasellaEspecial sortidaBlau = new CasellaEspecial("blau", i, joc, "sortida", "blau");
-				especialDAO.saveOrUpdate(sortidaBlau);
-				break;
+				case 0:
+					casella = new Casella("casa", i, joc);
+					casellaDAO.saveOrUpdate(casella);
+					break;
+				case 12:
+				case 29:
+				case 46:
+				case 63:
+					casella = new Casella("seguro", i, joc);
+					casellaDAO.saveOrUpdate(casella);
+					break;
+				case 5:
+					CasellaEspecial entradaGroc = new CasellaEspecial("seguro", i, joc, "entrada", "groc");
+					especialDAO.saveOrUpdate(entradaGroc);
+					break;
+				case 17:
+					CasellaEspecial sortidaBlau = new CasellaEspecial("blau", i, joc, "sortida", "blau");
+					especialDAO.saveOrUpdate(sortidaBlau);
+					break;
 
-			case 22:
-				CasellaEspecial entradaBlau = new CasellaEspecial("blau", i, joc, "entrada", "blau");
-				especialDAO.saveOrUpdate(entradaBlau);
-				break;
+				case 22:
+					CasellaEspecial entradaBlau = new CasellaEspecial("blau", i, joc, "entrada", "blau");
+					especialDAO.saveOrUpdate(entradaBlau);
+					break;
 
-			case 34:
-				CasellaEspecial sortidaVermell = new CasellaEspecial("vermell", i, joc, "sortida", "vermell");
-				especialDAO.saveOrUpdate(sortidaVermell);
-				break;
+				case 34:
+					CasellaEspecial sortidaVermell = new CasellaEspecial("vermell", i, joc, "sortida", "vermell");
+					especialDAO.saveOrUpdate(sortidaVermell);
+					break;
 
-			case 39:
-				CasellaEspecial entradaVermell = new CasellaEspecial("vermell", i, joc, "entrada", "vermell");
-				especialDAO.saveOrUpdate(entradaVermell);
-				break;
+				case 39:
+					CasellaEspecial entradaVermell = new CasellaEspecial("vermell", i, joc, "entrada", "vermell");
+					especialDAO.saveOrUpdate(entradaVermell);
+					break;
 
-			case 51:
-				CasellaEspecial sortidaVerd = new CasellaEspecial("verd", i, joc, "sortida", "verd");
-				especialDAO.saveOrUpdate(sortidaVerd);
-				break;
+				case 51:
+					CasellaEspecial sortidaVerd = new CasellaEspecial("verd", i, joc, "sortida", "verd");
+					especialDAO.saveOrUpdate(sortidaVerd);
+					break;
 
-			case 56:
-				CasellaEspecial entradaVerd = new CasellaEspecial("verd", i, joc, "entrada", "verd");
-				especialDAO.saveOrUpdate(entradaVerd);
-				break;
+				case 56:
+					CasellaEspecial entradaVerd = new CasellaEspecial("verd", i, joc, "entrada", "verd");
+					especialDAO.saveOrUpdate(entradaVerd);
+					break;
 
-			case 68:
-				CasellaEspecial sortidaGroc = new CasellaEspecial("groc", i, joc, "sortida", "groc");
-				especialDAO.saveOrUpdate(sortidaGroc);
-				break;
+				case 68:
+					CasellaEspecial sortidaGroc = new CasellaEspecial("groc", i, joc, "sortida", "groc");
+					especialDAO.saveOrUpdate(sortidaGroc);
+					break;
 
-			case 69:
-			case 70:
-			case 71:
-			case 72:
-			case 73:
-			case 74:
-			case 75:
-				casella = new Casella("seguro", i, joc);
-				casellaDAO.saveOrUpdate(casella);
-				break;
-			default:
-				casella = new Casella("blanca", i, joc);
-				casellaDAO.saveOrUpdate(casella);
-				break;
+				case 69:
+				case 70:
+				case 71:
+				case 72:
+				case 73:
+				case 74:
+				case 75:
+					casella = new Casella("seguro", i, joc);
+					casellaDAO.saveOrUpdate(casella);
+					break;
+				default:
+					casella = new Casella("blanca", i, joc);
+					casellaDAO.saveOrUpdate(casella);
+					break;
 			}
 
 		}
@@ -160,8 +234,8 @@ public class main {
 		List<String> colors = new ArrayList<>();
 		colors.add("Vermell");
 		colors.add("Verd");
-		colors.add("Blau");
 		colors.add("Groc");
+		colors.add("Blau");
 
 		// Creació dels jugadors podem seleccionar
 		for (int i = 0; i < numJugadors; i++) {
