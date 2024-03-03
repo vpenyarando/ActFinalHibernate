@@ -6,6 +6,7 @@ public class Dau {
 
 public Dau() {
 	this.cares=6;}
+
 public int tirar() {
 	Random rd= new Random();
 	return rd.nextInt(cares)+1;

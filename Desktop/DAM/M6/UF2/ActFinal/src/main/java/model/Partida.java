@@ -2,6 +2,7 @@ package model;
 
 import javax.persistence.*;
 import java.util.Date;
+import javax.persistence.ManyToOne;
 
 @Entity
 @Table(name = "Partides")

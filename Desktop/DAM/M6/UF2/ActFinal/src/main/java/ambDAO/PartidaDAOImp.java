@@ -13,11 +13,7 @@ public class PartidaDAOImp extends GenericDAOImpl<Partida,Integer> implements Pa
 		
 	}
 
-	@Override
-	public int tiradaDau() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+
 
 
 

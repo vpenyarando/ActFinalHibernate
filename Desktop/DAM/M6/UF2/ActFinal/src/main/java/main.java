@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.*;
 
 import ambDAO.*;
 import InterfacesDAO.*;
@@ -55,75 +56,192 @@ public class main {
 
 	private static void inciarJugar() {
 		int torn = buscarAleatoriamentJugador();
-		int maxJugador= jugadors.size();
-		int[] tirada= new int[2];
-		boolean guanyador= false;
+		int[] tirada = new int[2];
+		boolean guanyador = false;
 		int contTirades;
-		ordenarJugadors(torn);
-		List <Fitxa> fitxesList= fitxaDAO.getAllFitxesPartida(joc);
+		List<Fitxa> fitxesList = fitxaDAO.getAllFitxesPartida(joc);
 		do {
-			//jugador que fem la jugada
-			Jugador tornJugador= jugadors.get(torn);
-			List <Fitxa> fitxesJugador= new ArrayList<>();
-			for (Fitxa tipe:fitxesList){
-				if(tipe.getJugador()==tornJugador){
-                fitxesJugador.add(tipe);
+			// jugador que fem la jugada
+			Jugador tornJugador = jugadors.get(torn);
+			List<Fitxa> fitxesJugador = new ArrayList<>();
+			for (Fitxa tipe : fitxesList) {
+				if (tipe.getJugador() == tornJugador) {
+					fitxesJugador.add(tipe);
 				}
 			}
-			//posem a zero és control de 3 tirades repetides
-			contTirades=0;
+			// posem a zero és control de 3 tirades repetides
+			// fiquem bucle per repetir la tirada repetida d'un mateix jugador
+			contTirades = 0;
 			while (true) {
-				
-				//primera tirada
-				tirada=tiradaDaus();
-				List <Fitxa> fitxesActives=llistaFitxesActives(fitxesJugador);
-				if(fitxesActives.size()<4){
-					//cas qeu tenim fitxes en casella 0 o siugui que no estan actives
-					if(tirada[0]==tirada[1]){
-						// cas que els dos daus tinguin el mateix resultat
-						if(contTirades<2){//evitem que no repeteixi per tercera vegada
-							++contTirades;//incrementar el contador
-							//cas que tenim fitxes a casa//entradaALTablero
-							posarEntrada(fitxesJugador,tornJugador.getColor());
-							if (llistaFitxesActives(fitxesJugador).size()<4) {										
-								
-													
-							
-						}else if(contTirades>2){
-							// cas s'ha me matar una ftixa excepte que estigui a casa, pasadisMeta o Meta
-							//tenim cambiar el nom realment selecciona que fitxa de
-							matarUnafitxa(fitxesActives);	
-							//reiniciem el contador de tirades per repetició
-							contTirades=0;
+
+				// primera tirada
+				tirada = tiradaDaus();
+				List<Fitxa> fitxesActives = llistaFitxesActives(fitxesJugador);
+
+				if (tirada[0] == tirada[1]) {
+					// cas que els dos daus tinguin el mateix resultat
+					if (contTirades < 2) {// evitem que no repeteixi per tercera vegada
+						++contTirades;// incrementar el contador
+						// cas que tenim fitxes a casa//entradaALTablero
+						if (fitxesActives.size() > 4) {
+							posarEntrada(fitxesJugador, tornJugador.getColor());
+						} else {
+							determinarMovimentFitxa(fitxesActives, tirada);
+						}
+
+					} else {
+						// cas s'ha em matar una ftixa excepte que estigui a casa, pasadisMeta o Meta
+						// tenim cambiar el nom realment selecciona que fitxa de
+						matarUnafitxa(fitxesActives);
+						// reiniciem el contador de tirades per repetició
+						contTirades = 0;
+						// canvi de torn
+						torn = (torn == jugadors.size() - 1) ? 0 : torn + 1;
+						break;
+
+					}
+
+				} else {
+					determinarMovimentFitxa(fitxesActives, tirada);
+					//// comprovar moviments amb dau color fitxa jugador
+					// farem el cas -1 quan cap de les fitxes
+
+					// si no poden moure serà valor negatiu
+
+					// comprovar si ha guanyat
+					// break per sortir buccle
+					break;
+				}
+
+			}
+
+		} while (!guanyador);
+
+	}
+
+	private static void determinarMovimentFitxa(List<Fitxa> fitxesActives, int[] tirada) {
+		int sumaTirada = tirada[0] + tirada[1];
+		ArrayList<MovimentsPossibles> moviments = new ArrayList<>();
+
+		for (Fitxa tip : fitxesActives) {
+			int posicioActual = tip.getPosicio();
+			int novaPosicio = posicioActual + sumaTirada;
+			String colorFitxa = tip.getJugador().getColor();
+			if (posicioActual <= 68) {
+				if (novaPosicio > 69) {
+					if (!existeixBarrera(posicioActual, 68, tip)) {
+						// cas que supera al 68
+						if (colorFitxa.equals("Groc") && novaPosicio <= 76) {
+
+							// cas que no tingui obstacles de barreres
+							moviments.add(new MovimentsPossibles(tip, novaPosicio));
+
+						} else {
+							int casellaSelecionada = novaPosicio - 68;
+							moviments.add(new MovimentsPossibles(tip, casellaSelecionada));
 						}
 					}
-				else{
-					////comprovar moviments amb dau color fitxa jugador
-					//farem el cas -1 quan cap de les fitxes
-					posiblesMovimentsSeleccionar(fitxesActives);
-					//si no poden moure serà valor negatiu
-					
-					
-								//usuari selecciona casella
-								//posar fitxa en casella seleccionada
-								//comprobar si mata alguna casella
-							   //comprovar si ha guanyat
-							   //break per sortir buccle
-							   break;
+
+				} else {
+					int casellaEntrada = especialDAO.casellaEntradaPasadisMeta(colorFitxa);
+					if (posicioActual < casellaEntrada && novaPosicio > casellaEntrada) {
+						if (!existeixBarrera(posicioActual, casellaEntrada, tip)) {
+							// nova Posició li restem casella entrada i sumen 68 ens dona posicio Pasadis
+							int casellaPosicionar = novaPosicio - casellaEntrada + 68;
+							if (casellaPosicionar <= 76) {
+								moviments.add(new MovimentsPossibles(tip, casellaPosicionar));
+							}
+
+						}
+					} else {
+						// cas qualsevol casella que no especial
+						if (!existeixBarrera(posicioActual, novaPosicio, tip)) {
+							moviments.add(new MovimentsPossibles(tip, novaPosicio));
+						}
+					}
 				}
-				}
-				
-				
+
 			}
-		} while (!guanyador)
-	
-		
-	}
+		}
+		seleccionarMoviment(moviments);
 
 	}
 
-	private static void posiblesMovimentsSeleccionar(List<Fitxa> fitxesActives) {
+	private static void seleccionarMoviment(ArrayList<MovimentsPossibles> moviments) {
+		if (moviments.size() < 1) {
+			System.out.println("No tens Moviments per poder realitzar");
+		} else {
+			System.out.println("Tens seleccionar número de casella");
+			for (MovimentsPossibles mogut : moviments) {
+				System.out.println("Posicio " + mogut.getPosicioFinal());
+			}
+			int opcio;
+			boolean seleccioValida = false;
+			do {
+				while (!sc.hasNextInt()) {
+					System.out.println("Si us plau el número ha de ser de la casella");
+					sc.next();
+				}
+				opcio = sc.nextInt();
 
+				sc.nextLine();
+				for (MovimentsPossibles mogut : moviments) {
+					if (mogut.getPosicioFinal() == opcio) {
+						System.out.println("Posicio " + mogut.getPosicioFinal());
+						seleccioValida = true;
+						fitxaDAO.moureFitxa(mogut.getFitxa(), opcio);
+						break;
+					}
+
+				}
+				if (!seleccioValida) {
+					System.out.println("Nùmero no vàlid.");
+				}
+			} while (!seleccioValida);
+		}
+
+	}
+
+	private static boolean existeixBarrera(int posicioActual, int novaPosicio, Fitxa tip) {
+		boolean barrera = false;
+
+		if (posicioActual > novaPosicio) {// cas que pasi del 68
+
+			for (int i = posicioActual; i < 69; i++) {
+				List<Fitxa> fitxesEnCasella = fitxaDAO.getAllFitxesByPosicio(i, joc);
+				if (!fitxesEnCasella.isEmpty()) {
+					if (fitxesEnCasella.size() > 1) {
+						barrera = true;
+						return barrera;
+					}
+
+				}
+			}
+			// comprobar fitxes despues de 68
+			for (int i = 1; i <= novaPosicio; i++) { // Comprovar les caselles desde 1 fins nova posició
+				List<Fitxa> fitxesEnCasella = fitxaDAO.getAllFitxesByPosicio(i, joc);
+				if (!fitxesEnCasella.isEmpty()) {
+					if (fitxesEnCasella.size() > 1) {
+						barrera = true;
+						return barrera;
+					}
+				}
+			}
+
+		} else {
+			for (int i = posicioActual; i <= novaPosicio; i++) { // Comprovar les caselles desde actual fins nova
+																	// posició
+				List<Fitxa> fitxesEnCasella = fitxaDAO.getAllFitxesByPosicio(i, joc);
+				if (!fitxesEnCasella.isEmpty()) {
+					if (fitxesEnCasella.size() > 1) {
+						barrera = true;
+						return barrera;
+					}
+				}
+			}
+
+		}
+		return barrera;
 	}
 
 	private static void matarUnafitxa(List<Fitxa> fitxesActives) {
@@ -163,10 +281,6 @@ public class main {
 		return fitxesActives;
 	}
 
-	private static void ordenarJugadors(int torn) {
-
-	}
-
 	private static int[] tiradaDaus() {
 		Dau dau = new Dau();
 
@@ -183,6 +297,7 @@ public class main {
 	private static void cloenda() {
 		System.out.println("Partida acabada");
 
+		sc.close();
 	}
 
 	private static void crearCaselles() {
@@ -193,73 +308,73 @@ public class main {
 		for (int i = 0; i <= numCaselles; i++) {
 			Casella casella;
 			switch (i) {
-				case 0:
-					casella = new Casella("casa", i, joc);
-					casellaDAO.saveOrUpdate(casella);
-					break;
-				case 12:
-				case 29:
-				case 46:
-				case 63:
-					casella = new Casella("seguro", i, joc);
-					casellaDAO.saveOrUpdate(casella);
-					break;
-				case 5:
-					CasellaEspecial entradaGroc = new CasellaEspecial("seguro", i, joc, "entrada", "groc");
-					especialDAO.saveOrUpdate(entradaGroc);
-					break;
-				case 17:
-					CasellaEspecial sortidaBlau = new CasellaEspecial("blau", i, joc, "sortida", "blau");
-					especialDAO.saveOrUpdate(sortidaBlau);
-					break;
+			case 0:
+				casella = new Casella("casa", i, joc);
+				casellaDAO.saveOrUpdate(casella);
+				break;
+			case 12:
+			case 29:
+			case 46:
+			case 63:
+				casella = new Casella("seguro", i, joc);
+				casellaDAO.saveOrUpdate(casella);
+				break;
+			case 5:
+				CasellaEspecial entradaGroc = new CasellaEspecial("seguro", i, joc, "entrada", "groc");
+				especialDAO.saveOrUpdate(entradaGroc);
+				break;
+			case 17:
+				CasellaEspecial sortidaBlau = new CasellaEspecial("blau", i, joc, "sortida", "blau");
+				especialDAO.saveOrUpdate(sortidaBlau);
+				break;
 
-				case 22:
-					CasellaEspecial entradaBlau = new CasellaEspecial("blau", i, joc, "entrada", "blau");
-					especialDAO.saveOrUpdate(entradaBlau);
-					break;
+			case 22:
+				CasellaEspecial entradaBlau = new CasellaEspecial("blau", i, joc, "entrada", "blau");
+				especialDAO.saveOrUpdate(entradaBlau);
+				break;
 
-				case 34:
-					CasellaEspecial sortidaVermell = new CasellaEspecial("vermell", i, joc, "sortida", "vermell");
-					especialDAO.saveOrUpdate(sortidaVermell);
-					break;
+			case 34:
+				CasellaEspecial sortidaVermell = new CasellaEspecial("vermell", i, joc, "sortida", "vermell");
+				especialDAO.saveOrUpdate(sortidaVermell);
+				break;
 
-				case 39:
-					CasellaEspecial entradaVermell = new CasellaEspecial("vermell", i, joc, "entrada", "vermell");
-					especialDAO.saveOrUpdate(entradaVermell);
-					break;
+			case 39:
+				CasellaEspecial entradaVermell = new CasellaEspecial("vermell", i, joc, "entrada", "vermell");
+				especialDAO.saveOrUpdate(entradaVermell);
+				break;
 
-				case 51:
-					CasellaEspecial sortidaVerd = new CasellaEspecial("verd", i, joc, "sortida", "verd");
-					especialDAO.saveOrUpdate(sortidaVerd);
-					break;
+			case 51:
+				CasellaEspecial sortidaVerd = new CasellaEspecial("verd", i, joc, "sortida", "verd");
+				especialDAO.saveOrUpdate(sortidaVerd);
+				break;
 
-				case 56:
-					CasellaEspecial entradaVerd = new CasellaEspecial("verd", i, joc, "entrada", "verd");
-					especialDAO.saveOrUpdate(entradaVerd);
-					break;
+			case 56:
+				CasellaEspecial entradaVerd = new CasellaEspecial("verd", i, joc, "entrada", "verd");
+				especialDAO.saveOrUpdate(entradaVerd);
+				break;
 
-				case 68:
-					CasellaEspecial sortidaGroc = new CasellaEspecial("groc", i, joc, "sortida", "groc");
-					especialDAO.saveOrUpdate(sortidaGroc);
-					break;
+			case 68:
+				CasellaEspecial sortidaGroc = new CasellaEspecial("groc", i, joc, "sortida", "groc");
+				especialDAO.saveOrUpdate(sortidaGroc);
+				break;
 
-				case 69:
-				case 70:
-				case 71:
-				case 72:
-				case 73:
-				case 74:
-				case 75:
-					casella = new Casella("seguro", i, joc);
-					casellaDAO.saveOrUpdate(casella);
-					break;
-				case 76:
-					casella = new Casella("meta", i, joc);
-					break;
-				default:
-					casella = new Casella("blanca", i, joc);
-					casellaDAO.saveOrUpdate(casella);
-					break;
+			case 69:
+			case 70:
+			case 71:
+			case 72:
+			case 73:
+			case 74:
+			case 75:
+				casella = new Casella("seguro", i, joc);
+				casellaDAO.saveOrUpdate(casella);
+				break;
+			case 76:
+				casella = new Casella("meta", i, joc);
+				break;
+			default:
+				casella = new Casella("blanca", i, joc);
+				casellaDAO.saveOrUpdate(casella);
+				break;
 			}
 
 		}
@@ -311,7 +426,7 @@ public class main {
 					sc.next();
 				}
 				opcio = sc.nextInt();
-				sc.close();
+
 			} while (opcio <= 0 || opcio > colors.size());
 			String colorSeleccionat = colors.get(opcio);
 			jugadors.add(new Jugador(nomJugador, colorSeleccionat, 0));
