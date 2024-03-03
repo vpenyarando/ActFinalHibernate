@@ -34,7 +34,7 @@ public class GenericDAOImpl <T, ID extends Serializable> implements GenericDAO<T
 		try {
 			session.beginTransaction();
 			session.saveOrUpdate(entity);
-			session.getTransaction().
+			session.getTransaction().commit();
 
 		} catch (HibernateException e) {
 			e.printStackTrace();

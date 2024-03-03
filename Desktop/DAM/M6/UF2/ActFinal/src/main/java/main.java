@@ -70,6 +70,7 @@ public class main {
                 fitxesJugador.add(tipe);
 				}
 			}
+			//posem a zero és control de 3 tirades repetides
 			contTirades=0;
 			while (true) {
 				
@@ -77,24 +78,32 @@ public class main {
 				tirada=tiradaDaus();
 				List <Fitxa> fitxesActives=llistaFitxesActives(fitxesJugador);
 				if(fitxesActives.size()<4){
-					//cas qeu tenim fitxes en casella
+					//cas qeu tenim fitxes en casella 0 o siugui que no estan actives
 					if(tirada[0]==tirada[1]){
 						// cas que els dos daus tinguin el mateix resultat
-						if(contTirades<2){
-							++contTirades;
+						if(contTirades<2){//evitem que no repeteixi per tercera vegada
+							++contTirades;//incrementar el contador
 							//cas que tenim fitxes a casa//entradaALTablero
 							posarEntrada(fitxesJugador,tornJugador.getColor());
 							if (llistaFitxesActives(fitxesJugador).size()<4) {										
 								
 													
 							
-						}else{
+						}else if(contTirades>2){
 							// cas s'ha me matar una ftixa excepte que estigui a casa, pasadisMeta o Meta
+							//tenim cambiar el nom realment selecciona que fitxa de
 							matarUnafitxa(fitxesActives);	
+							//reiniciem el contador de tirades per repetició
+							contTirades=0;
 						}
 					}
 				else{
 					////comprovar moviments amb dau color fitxa jugador
+					//farem el cas -1 quan cap de les fitxes
+					posiblesMovimentsSeleccionar(fitxesActives);
+					//si no poden moure serà valor negatiu
+					
+					
 								//usuari selecciona casella
 								//posar fitxa en casella seleccionada
 								//comprobar si mata alguna casella
@@ -106,31 +115,40 @@ public class main {
 				
 				
 			}
-		} while (!guanyador);
+		} while (!guanyador)
 	
 		
 	}
 
+	}
 
+	private static void posiblesMovimentsSeleccionar(List<Fitxa> fitxesActives) {
+
+	}
 
 	private static void matarUnafitxa(List<Fitxa> fitxesActives) {
 		// ha de complir les seguents condicions ni ha de estar fora de pasa
-for(Fitxa tip: fitxesActives){
-	if(tip.getPosicio()<69){
-		//esta dintr del tauler
-		fitxaDAO.moureFitxa(tip, 0);
-	}
-}
+		for (Fitxa tip : fitxesActives) {
+			// son les posicions entre 1 i 69
+			if (tip.getPosicio() < 69) {
+				// esta dintr del tauler la posem en el posicio 0 i la tenim de desactivar
+				tip.setPosicio(0);
+				tip.setActiva(false);
+				fitxaDAO.saveOrUpdate(tip);
+
+			}
+		}
 	}
 
-	private static void posarEntrada(List<Fitxa> fitxesJugador,String color) {
+	private static void posarEntrada(List<Fitxa> fitxesJugador, String color) {
 		// obetenir la posicio entrada i de color
 		for (Fitxa tip : fitxesJugador) {
-			Casella entrada = especialDAO.getCasellaByColor(color,"Entrada");
-		fitxaDAO.moureFitxa(tip, entrada.getPosicio());
-		break;
+			Casella entrada = especialDAO.getCasellaByColor(color, "Entrada");
+
+			fitxaDAO.moureFitxa(tip, entrada.getPosicio());
+			break;
 		}
-		
+
 	}
 
 	private static List<Fitxa> llistaFitxesActives(List<Fitxa> fitxesJugador) {
@@ -141,11 +159,9 @@ for(Fitxa tip: fitxesActives){
 				fitxesActives.add(fitxa);
 			}
 		}
-	
+
 		return fitxesActives;
 	}
-
-
 
 	private static void ordenarJugadors(int torn) {
 
@@ -236,6 +252,9 @@ for(Fitxa tip: fitxesActives){
 				case 75:
 					casella = new Casella("seguro", i, joc);
 					casellaDAO.saveOrUpdate(casella);
+					break;
+				case 76:
+					casella = new Casella("meta", i, joc);
 					break;
 				default:
 					casella = new Casella("blanca", i, joc);
