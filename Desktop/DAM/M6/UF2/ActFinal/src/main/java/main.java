@@ -103,12 +103,11 @@ public class main {
 
 				} else {
 					determinarMovimentFitxa(fitxesActives, tirada);
-					//// comprovar moviments amb dau color fitxa jugador
-					// farem el cas -1 quan cap de les fitxes
+					
+					//comprovar si totes estan
 
-					// si no poden moure serà valor negatiu
-
-					// comprovar si ha guanyat
+					guanyador=comprobarTotesMeta(fitxesJugador);
+					
 					// break per sortir buccle
 					break;
 				}
@@ -117,6 +116,17 @@ public class main {
 
 		} while (!guanyador);
 
+	}
+
+	private static boolean comprobarTotesMeta(List<Fitxa> fitxesJugador) {
+	    boolean meta = true;
+	    for (Fitxa tip : fitxesJugador) {
+	        if (tip.getPosicio() != 76) {
+	            meta = false;
+	            break;
+	        }
+	    }
+	    return meta;
 	}
 
 	private static void determinarMovimentFitxa(List<Fitxa> fitxesActives, int[] tirada) {
@@ -189,6 +199,30 @@ public class main {
 					if (mogut.getPosicioFinal() == opcio) {
 						System.out.println("Posicio " + mogut.getPosicioFinal());
 						seleccioValida = true;
+						List<Fitxa> victimes=fitxaDAO.getAllFitxesByPosicio(mogut.getPosicioFinal(), joc);
+						if(!(victimes.size()<2)) {//seria ella mateixa i la segona fitxa
+							int cont=0;
+							//cas que hi hagi una fitxa en la casella
+							for (Fitxa tip: victimes) {
+								
+								if(tip.getJugador().getColor().equals(mogut.getFitxa().getJugador().getColor())) {
+									++cont;
+									if(cont==02) {
+										System.out.println("Barrera");
+									}
+								//s'ens escapa el casq que fos dos fitxes en seguro no podriem escollir
+								}else {
+									if(!casellaDAO.verificarCasaSegura(mogut.getPosicioFinal())){
+										//casella que no te seguro
+										fitxaDAO.capturarFitxa(tip);
+										
+									}
+								}
+								
+							}
+							
+							
+						}
 						fitxaDAO.moureFitxa(mogut.getFitxa(), opcio);
 						break;
 					}
