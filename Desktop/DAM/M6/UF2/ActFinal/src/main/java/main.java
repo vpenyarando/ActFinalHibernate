@@ -107,13 +107,18 @@ public class main {
 					//comprovar si totes estan
 
 					guanyador=comprobarTotesMeta(fitxesJugador);
-					
+					if(guanyador) {
+						int victories= tornJugador.getVictories()+1;
+						tornJugador.setVictories(victories);
+						jugadorDAO.saveOrUpdate(tornJugador);
+					}
 					// break per sortir buccle
 					break;
 				}
 
 			}
-
+			//canvi de torn
+			torn =(torn+1>=jugadors.size())?torn+1:0;
 		} while (!guanyador);
 
 	}
