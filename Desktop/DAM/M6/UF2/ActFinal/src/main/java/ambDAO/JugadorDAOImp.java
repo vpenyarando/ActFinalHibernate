@@ -1,5 +1,6 @@
 package ambDAO;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.hibernate.*;
@@ -18,13 +19,14 @@ public class JugadorDAOImp extends GenericDAOImpl<Jugador,Integer> implements Ju
 
 	@Override
 	public List<Fitxa> llistaFitxesJugador(int id) {
-		// TODO Auto-generated method stub
-		return null;
+		try (Session session = Utils.getSessionFactory().openSession()) {
+			String hql = "SELECT f FROM Fitxa f WHERE f.jugador.id = :idJugador";
+			Query<Fitxa> query = session.createQuery(hql, Fitxa.class);
+			query.setParameter("idJugador", id);
+			return query.list();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Collections.emptyList();
+		}
 	}
-
-
-
-
-
-
 }

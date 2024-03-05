@@ -19,5 +19,7 @@ public interface FitxaDAO extends GenericDAO<Fitxa, Integer> {
 	void entradaFitxaTauler(Fitxa fitxa);
 
 	boolean finalitzatRecorregut(Fitxa fitxa, int quantitat);
+	
+	List<Fitxa> getAllFitxesByPosicio(int posicio, Partida partida);
 
 }
